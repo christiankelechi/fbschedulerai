@@ -1,0 +1,101 @@
+PRODUCT REQUIREMENTS DOCUMENT (PRD) &
+OPERATIONAL AGREEMENT
+Automated Facebook Content Generation & Scheduling Engine
+Project Name Automated Facebook Content Generation &
+Scheduling Engine
+Document Version & Date Version 1.0 — September 22, 2026
+Developer / Technical Lead Engr. Christian Kelechi Eze
+Project Owner / Client Rev. Fr. Ejiogu Chukwuemeka
+1. Executive Summary & Objective
+The objective of this project is to design, deploy, and maintain an autonomous content creation and
+scheduling backend engine. The platform will periodically prompt zero-cost AI endpoints to generate
+niche-relevant reflections, scriptural thoughts, and educational content, synthesize necessary
+visual/video media artifacts, store these items in an optimized backend repository, and
+programmatically publish posts and vertical video reels directly to Rev. Fr. Ejiogu Chukwuemeka’s
+designated Facebook Page via the Meta Graph API without requiring daily manual intervention. 2. Infrastructure & Zero-Cost Architecture Strategy
+To satisfy the strict requirement of keeping recurring overhead near zero, the application architecture
+relies entirely on self-hosted containerized services on the Owner's Contabo VPS and zero-cost/free-tier
+third-party inference services. System Layer Technology / Service Provider Cost Model
+Compute & Server Contabo Cloud VPS (Ubuntu LTS, Dockerized)
+Owner Responsibility (~€5–€7/mo
+billed yearly)
+Database & Task Queue PostgreSQL + Redis (Self-hosted on
+Contabo VPS)
+$0.00 / Free
+Media Assembly Engine Local FFmpeg & MoviePy (Compiled
+on VPS)
+$0.00 / Free
+Text Generation (LLM) OpenRouter (Free Router: openrouter/free, Llama 3, Mistral)
+$0.00 / Free
+Image Generation Hugging Face Serverless Inference /
+Local SD-Turbo
+$0.00 / Free
+Voiceover & Audio TTS edge-tts (Microsoft Edge Neural
+Voices Engine)
+$0.00 / Free
+Static Media Storage Local Server Static Volume /
+Cloudflare R2 Free Tier
+$0.00 / Free
+Meta Graph Publishing Meta for Developers (Page Publishing
+& Reels Endpoints)
+$0.00 / Free
+3. System Scope & Functional Requirements
+3.1 Content Generation Pipeline
+- Autonomous Ideation: Celery Beat periodically triggers according to scheduled cron expressions
+(e.g., daily reflections, morning prayers, or evening scriptures) pulling from curated prompt banks. - Zero-Cost LLM Ingestion: Dispatches requests to OpenRouter utilizing designated zero-cost
+endpoints. The prompt schema enforces strict structured outputs (caption, scripture citations, hashtags, and visual prompt description). - Visual & Media Rendering: Generates branded quote cards and static graphics via Pillow/Hugging
+Face. For video reels, the engine synthesizes audio using edge-tts, aligns vertical footage loops (9:16
+aspect ratio), embeds styled captions via FFmpeg, and outputs compressed MP4 files ready for
+distribution. 3.2 Facebook Publishing & Scheduling Engine
+- Token Security & Storage: Encrypted storage of Facebook Page Access Tokens and Meta App
+Secrets in protected environment variables. - Direct Feed & Media Publishing: Automated REST endpoints handling /{page-id}/feed and /{page￾id}/photos with dynamic image attachments. - Video Reels Upload Protocol: Implementation of Meta's 3-step Reels upload workflow: (1) Start
+phase to generate reel video session ID; (2) Binary transfer directly to Meta rupload infrastructure;
+(3) Finish phase to apply captions, visibility flags, and trigger indexing. - Error Handling & Automatic Retries: Posts that encounter network timeouts or transient Meta
+rate-limit blocks are flagged as FAILED in Django Admin, and Celery retries the job with exponential
+backoff up to 3 times before sending administrative alerts. 4. Technical Specifications & Stack
+- Language & Framework: Python 3.12, Django 5.x, Django REST Framework.
+- Asynchronous Queuing & Scheduling: Celery with Redis broker and Celery Beat scheduler. - Database Management: PostgreSQL (relational database for posts, schedules, logs, and token
+vaults). - Server Environment: Ubuntu 24.04 LTS (Contabo VPS), Docker Compose, Nginx, Let's Encrypt SSL. - Video/Audio Toolchain: FFmpeg system binary, Python moviepy, and edge-tts. 5. Non-Functional Requirements & Free-Tier Constraints
+Rev. Fr. Ejiogu Chukwuemeka explicitly acknowledges and agrees to the following operational
+parameters inherent to a zero-cost API architecture: - Rate Limiting & Latency: Free AI endpoints (such as OpenRouter free tiers) may occasionally
+experience queue delays or brief throttling during global peak hours. The software incorporates
+retry handlers, but publishing down to the exact second cannot be guaranteed on free third-party
+tiers. - Server Resource Management: Video rendering using CPU-based FFmpeg on the Contabo VPS will
+be throttled and scheduled during off-peak hours to avoid saturating VPS RAM and CPU. - Meta Platform Policies: Automated posting operates strictly within Meta's published Graph API
+terms of service. Developer is not responsible for policy updates or automated moderation actions
+initiated by Meta. 6. Project Deliverables & Milestones
+- Milestone 1: Server provisioning on Contabo, Nginx/SSL configuration, Meta Developer App
+creation, and API token validation. - Milestone 2: AI pipeline integration (OpenRouter free model ingestion, graphic styling, edge-tts
+audio synthesis). - Milestone 3: Celery task queue, automated scheduling engine, and Django administrative
+monitoring dashboard. - Milestone 4: End-to-end testing, live scheduled deployment of image and video reel posts to the
+Facebook Page, and handover.
+PART II: COOPERATION & OPERATIONAL AGREEMENT
+This Agreement is entered into as of September 22, 2026, by and between Christian Kelechi Eze
+("Developer") and Rev. Fr. Ejiogu Chukwuemeka ("Owner"). Article 1: Scope of Work
+Developer agrees to architect, build, configure, and deploy the automated Facebook content creation
+and scheduling engine as described in the Product Requirements Document above. Developer provides
+technical implementation, server setup, and system integration. Article 2: Remuneration & Workmanship Terms
+By mutual agreement rooted in personal relationship and goodwill, the technical engineering, setup, and
+deployment labor are provided by the Developer under special personal courtesy terms. This formal
+agreement exists to clarify technical expectations, prevent scope misunderstanding, and delineate
+financial responsibilities. Article 3: Financial Obligations & Third-Party Infrastructure Costs
+- Host & Server Ownership: All hosting, server subscriptions, domain names, and third-party fees
+belong exclusively to Rev. Fr. Ejiogu Chukwuemeka. - VPS Maintenance: Rev. Fr. Ejiogu Chukwuemeka agrees to purchase, maintain, and renew the
+Contabo VPS hosting plan in a timely manner to prevent service disruption or deletion. - Model Upgrades: Should the Owner at any time choose to upgrade from free-tier AI models (e.g., OpenRouter free tiers, free Hugging Face models) to premium commercial models (e.g., OpenAI
+GPT-4o, Midjourney, ElevenLabs voice cloning, Runway Gen-3), the Owner shall supply the relevant
+API keys and fund those third-party accounts directly. - Cost Liability: Developer shall not be responsible for paying, subsidizing, or advancing any server or
+third-party infrastructure fees on behalf of the Owner. Article 4: Ownership of Assets & Access
+Rev. Fr. Ejiogu Chukwuemeka retains 100% exclusive ownership of the Facebook Page, Meta Developer
+Accounts, published reflections, audio recordings, and brand identity. Upon project handover, Developer will deliver all operational documentation, environment configuration outlines, and codebase
+access to the Owner. Article 5: Limitation of Liability
+The Developer warrants that the software will be built according to standard engineering practices. However, Developer is not liable for: - Meta Actions: External decisions, account reviews, policy changes, or algorithmic moderation
+penalties imposed by Meta Platforms Inc. - Server Outages: Downtime, data loss, or server failure attributable to Contabo VPS hardware
+outages, power interruptions, or provider-side issues.
+- Third-Party APIs: Outages, model deprecations, or sudden API pricing changes made by third-party
+AI providers (e.g., OpenRouter). Signatures & Formal Acceptance
+IN WITNESS WHEREOF, the parties hereto have executed this Agreement as of the date first written
+above. DEVELOPER: PROJECT OWNER:
+Signature: __________
+Signature: ___________________________ Name: Christian Kelechi Eze Name: Rev. Fr. Ejiogu Chukwuemeka
+Title: Lead Systems Engineer Title: Project Owner & Content Lead
+Date: September 22, 2026 Date: September 22, 2026

@@ -1,0 +1,12 @@
+Django~=5.0
+djangorestframework
+django-environ
+celery
+redis
+psycopg2-binary
+python-dotenv
+Pillow
+moviepy
+edge-tts
+requests
+gunicorn

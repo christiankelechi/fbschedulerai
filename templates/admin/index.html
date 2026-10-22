@@ -1,0 +1,528 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  :root {
+    --dash-navy: #0B132B;
+    --dash-card-bg: #1C2541;
+    --dash-gold: #D4AF37;
+    --dash-gold-light: #F4E091;
+    --dash-emerald: #10B981;
+    --dash-amber: #F59E0B;
+    --dash-rose: #EF4444;
+    --dash-blue: #3B82F6;
+    --dash-text: #F8FAFC;
+    --dash-muted: #94A3B8;
+  }
+
+  .dash-container {
+    padding: 10px 0 30px 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  .dash-hero {
+    background: linear-gradient(135deg, #0B132B 0%, #1C2541 100%);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    color: var(--dash-text);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .dash-hero h1 {
+    margin: 0 0 6px 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--dash-gold-light);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .dash-hero p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--dash-muted);
+  }
+
+  .token-pill {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .token-pill .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .dot-green { background-color: var(--dash-emerald); box-shadow: 0 0 8px var(--dash-emerald); }
+  .dot-amber { background-color: var(--dash-amber); box-shadow: 0 0 8px var(--dash-amber); }
+  .dot-red { background-color: var(--dash-rose); box-shadow: 0 0 8px var(--dash-rose); }
+
+  /* KPI Grid */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .kpi-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 18px 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .kpi-card .label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 6px;
+  }
+
+  .kpi-card .value {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .val-total { color: #1e293b; }
+  .val-scheduled { color: var(--dash-amber); }
+  .val-published { color: var(--dash-emerald); }
+  .val-failed { color: var(--dash-rose); }
+
+  /* Action Toolbar */
+  .toolbar-section {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+  }
+
+  .toolbar-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 15px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: none;
+  }
+
+  .btn-gold {
+    background: linear-gradient(135deg, #d4af37 0%, #b89728 100%);
+    color: #0B132B !important;
+  }
+  .btn-gold:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+  .btn-blue {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #ffffff !important;
+  }
+  .btn-blue:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+  .btn-purple {
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    color: #ffffff !important;
+  }
+  .btn-purple:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+  .btn-green {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    color: #ffffff !important;
+  }
+  .btn-green:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+  .btn-outline {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #475569 !important;
+  }
+  .btn-outline:hover { background: #f1f5f9; }
+
+  /* Media & Post Grid */
+  .section-heading {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 28px 0 14px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .post-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 18px;
+    margin-bottom: 28px;
+  }
+
+  .post-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .post-card-media {
+    background: #0B132B;
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .post-card-media img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+
+  .post-card-media video {
+    width: 100%;
+    height: 220px;
+    background: #000;
+  }
+
+  .badge-tag {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+  .badge-published { background-color: var(--dash-emerald); }
+  .badge-scheduled { background-color: var(--dash-amber); }
+  .badge-failed { background-color: var(--dash-rose); }
+  .badge-draft { background-color: var(--dash-blue); }
+
+  .post-card-body {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .post-card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 6px 0;
+  }
+
+  .post-card-caption {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.4;
+    margin-bottom: 12px;
+    flex: 1;
+  }
+
+  .post-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+    border-top: 1px solid #f1f5f9;
+    font-size: 12px;
+    color: #94a3b8;
+  }
+
+  /* Table styling */
+  .log-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 30px;
+  }
+  .log-table th {
+    background: #f8fafc;
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #475569;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .log-table td {
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .log-table tr:hover td {
+    background-color: #f8fafc;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dash-container">
+
+  <!-- HERO BANNER -->
+  <div class="dash-hero">
+    <div>
+      <h1>✝ Rev. Fr. Ejiogu Chukwuemeka</h1>
+      <p>Automated Facebook Content Generation & Scheduling Engine • Contabo Zero-Cost Production Stack</p>
+    </div>
+    <div class="token-pill">
+      {% if active_vault %}
+        {% if active_vault.verification_status == 'valid' %}
+          <span class="dot dot-green"></span>
+          <span><strong>{{ active_vault.page_name }}</strong> (Token Active)</span>
+        {% else %}
+          <span class="dot dot-amber"></span>
+          <span><strong>{{ active_vault.page_name }}</strong> ({{ active_vault.get_verification_status_display }})</span>
+        {% endif %}
+      {% else %}
+        <span class="dot dot-amber"></span>
+        <span>Meta Page Credentials: Running in Mock Mode</span>
+      {% endif %}
+      <a href="/admin/action/verify-token/" class="btn-action btn-outline" style="padding: 4px 10px; font-size: 11px;">Verify</a>
+    </div>
+  </div>
+
+  <!-- KPI SUMMARY CARDS -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="label">Total Generated Posts</div>
+      <div class="value val-total">{{ total_posts|default:0 }}</div>
+      <small style="color: #64748b;">All autonomous reflections</small>
+    </div>
+    <div class="kpi-card">
+      <div class="label">Scheduled / Pending</div>
+      <div class="value val-scheduled">{{ scheduled_posts|default:0 }}</div>
+      <small style="color: #64748b;">Ready for automated publication</small>
+    </div>
+    <div class="kpi-card">
+      <div class="label">Published to Meta</div>
+      <div class="value val-published">{{ published_posts|default:0 }}</div>
+      <small style="color: #64748b;">Live on Facebook Page</small>
+    </div>
+    <div class="kpi-card">
+      <div class="label">Failed / Retrying</div>
+      <div class="value val-failed">{{ failed_posts|default:0 }}</div>
+      <small style="color: #64748b;">Requires review or retry</small>
+    </div>
+  </div>
+
+  <!-- QUICK ACTION TOOLBAR -->
+  <div class="toolbar-section">
+    <div class="toolbar-title">⚡ Instant Generator & Dispatch Operations</div>
+    <div class="action-buttons">
+      <a href="/admin/action/generate-content/?category=morning_prayer&type=image_quote" class="btn-action btn-gold">
+        🌅 Generate Morning Prayer Card
+      </a>
+      <a href="/admin/action/generate-content/?category=daily_reflection&type=vertical_reel" class="btn-action btn-blue">
+        🎬 Generate Midday Reel (9:16 Video)
+      </a>
+      <a href="/admin/action/generate-content/?category=evening_reflection&type=image_quote" class="btn-action btn-purple">
+        🕊 Generate Evening Reflection Card
+      </a>
+      <a href="/admin/action/publish-due/" class="btn-action btn-green">
+        🚀 Publish Due Posts Now
+      </a>
+      <a href="/admin/action/verify-token/" class="btn-action btn-outline">
+        🔄 Test Meta Graph Connection
+      </a>
+    </div>
+  </div>
+
+  <!-- RECENT GENERATED POSTS & MEDIA PREVIEWS -->
+  <div class="section-heading">
+    <span>📸 Recent Generated Content & Media Artifacts</span>
+    <a href="/admin/content/generatedpost/" style="font-size: 13px; font-weight: 600; text-decoration: none;">View All Posts &rarr;</a>
+  </div>
+
+  <div class="post-card-grid">
+    {% for post in recent_posts %}
+      <div class="post-card">
+        <div class="post-card-media">
+          {% if post.status == 'published' %}
+            <span class="badge-tag badge-published">Published</span>
+          {% elif post.status == 'scheduled' %}
+            <span class="badge-tag badge-scheduled">Scheduled</span>
+          {% elif post.status == 'failed' %}
+            <span class="badge-tag badge-failed">Failed</span>
+          {% else %}
+            <span class="badge-tag badge-draft">{{ post.status|title }}</span>
+          {% endif %}
+
+          {% if post.media %}
+            {% if post.media.asset_type == 'image' %}
+              <img src="{{ post.media.file_path.url }}" alt="{{ post.title }}" />
+            {% elif post.media.asset_type == 'video' %}
+              <video src="{{ post.media.file_path.url }}" controls preload="metadata"></video>
+            {% elif post.media.asset_type == 'audio' %}
+              <div style="padding: 20px; width: 100%; text-align: center;">
+                <p style="color: #fff; font-size: 12px; margin-bottom: 8px;">🎙 {{ post.media.title }}</p>
+                <audio src="{{ post.media.file_path.url }}" controls style="width: 90%;"></audio>
+              </div>
+            {% endif %}
+          {% else %}
+            <div style="color: #94a3b8; font-size: 13px; text-align: center; padding: 20px;">
+              📝 Text Feed Post
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="post-card-body">
+          <h3 class="post-card-title">{{ post.title|default:"Catholic Reflection" }}</h3>
+          <p class="post-card-caption">{{ post.caption|truncatewords:22 }}</p>
+          {% if post.scripture_citation %}
+            <div style="font-size: 12px; font-weight: 600; color: #b89728; margin-bottom: 8px;">
+              📖 {{ post.scripture_citation }}
+            </div>
+          {% endif %}
+          <div class="post-card-footer">
+            <span>
+              {% if post.scheduled_time %}
+                ⏰ {{ post.scheduled_time|date:"M d, H:i" }}
+              {% else %}
+                Created {{ post.created_at|timesince }} ago
+              {% endif %}
+            </span>
+            <div>
+              {% if not post.is_published %}
+                <a href="/admin/action/posts/{{ post.id }}/publish-now/" class="btn-action btn-gold" style="padding: 4px 10px; font-size: 11px;">
+                  Publish Now
+                </a>
+              {% else %}
+                <span style="color: var(--dash-emerald); font-weight: 600;">✓ Live</span>
+              {% endif %}
+              <a href="/admin/content/generatedpost/{{ post.id }}/change/" style="margin-left: 6px; font-size: 11px;">Edit</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div style="grid-column: 1 / -1; padding: 40px; text-align: center; background: #ffffff; border-radius: 12px; border: 1px dashed #cbd5e1;">
+        <p style="color: #64748b; margin-bottom: 12px;">No posts generated yet.</p>
+        <a href="/admin/action/generate-content/?category=daily_reflection&type=image_quote" class="btn-action btn-gold">
+          ✨ Generate First Reflection Card
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- RECENT PUBLISHING LOGS AUDIT -->
+  <div class="section-heading">
+    <span>📋 Meta Graph API Publishing Logs</span>
+    <a href="/admin/publishing/publishinglog/" style="font-size: 13px; font-weight: 600; text-decoration: none;">View All Logs &rarr;</a>
+  </div>
+
+  <table class="log-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Post</th>
+        <th>Status</th>
+        <th>Endpoint</th>
+        <th>Meta Post ID</th>
+        <th>Duration</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for log in recent_logs %}
+        <tr>
+          <td>#{{ log.id }}</td>
+          <td>
+            <a href="/admin/content/generatedpost/{{ log.post.id }}/change/">
+              {{ log.post.title|default:log.post.caption|truncatewords:6 }}
+            </a>
+          </td>
+          <td>
+            {% if log.status == 'success' %}
+              <span style="color: var(--dash-emerald); font-weight: 700;">🟢 Success</span>
+            {% elif log.status == 'failed' %}
+              <span style="color: var(--dash-rose); font-weight: 700;">🔴 Failed</span>
+            {% else %}
+              <span style="color: var(--dash-amber); font-weight: 700;">🟡 {{ log.status|title }}</span>
+            {% endif %}
+          </td>
+          <td><code>{{ log.endpoint_used|default:"N/A" }}</code></td>
+          <td><code>{{ log.meta_post_id|default:"-" }}</code></td>
+          <td>{{ log.duration_ms }} ms</td>
+          <td>{{ log.created_at|date:"M d, H:i:s" }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="7" style="text-align: center; color: #94a3b8; padding: 24px;">
+            No publishing activity logged yet.
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- STANDARD DJANGO ADMIN APP SECTIONS -->
+  <div class="section-heading">
+    <span>🗄 Core Data Models & Administration</span>
+  </div>
+
+  <div id="content-main">
+    {% include "admin/app_list.html" with app_list=app_list %}
+  </div>
+
+</div>
+{% endblock %}

@@ -43,7 +43,7 @@ ROOT_URLCONF = 'core_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -58,20 +58,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core_project.wsgi.application'
 
-# Database
-# Note: Using sqlite3 for local dev if posgres is not up, but we configured postgres in docker-compose.
-# We'll use environ DB URL parsing.
-DATABASES = {
-    'default': env.db('DATABASE_URL', default='sqlite:///db.sqlite3')
-}
-if env('DB_ENGINE', default='') == 'django.db.backends.postgresql':
-    DATABASES['default'] = {
-        'ENGINE': env('DB_ENGINE'),
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
-        'HOST': env('DB_HOST', default='127.0.0.1'),
-        'PORT': env('DB_PORT', default='5432'),
+# Database Configuration
+# Priority: DATABASE_URL -> Explicit DB_* settings -> SQLite fallback
+if env('DATABASE_URL', default=''):
+    DATABASES = {
+        'default': env.db('DATABASE_URL')
+    }
+elif env('DB_ENGINE', default='') == 'django.db.backends.postgresql':
+    DATABASES = {
+        'default': {
+            'ENGINE': env('DB_ENGINE'),
+            'NAME': env('DB_NAME', default='fbscheduler'),
+            'USER': env('DB_USER', default='postgres'),
+            'PASSWORD': env('DB_PASSWORD', default='postgres'),
+            'HOST': env('DB_HOST', default='127.0.0.1'),
+            'PORT': env('DB_PORT', default='5432'),
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
 
 # Password validation
@@ -101,6 +110,37 @@ CELERY_BROKER_URL = env('REDIS_URL', default='redis://127.0.0.1:6379/0')
 CELERY_RESULT_BACKEND = env('REDIS_URL', default='redis://127.0.0.1:6379/0')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    # Scan and publish due posts every 5 minutes
+    'publish-due-posts-every-5-mins': {
+        'task': 'publishing.tasks.publish_due_posts_task',
+        'schedule': crontab(minute='*/5'),
+    },
+    # Autonomous Morning Prayer (05:00 UTC, scheduled for 06:00)
+    'generate-morning-prayer-daily': {
+        'task': 'content.tasks.generate_morning_prayer_task',
+        'schedule': crontab(hour=5, minute=0),
+    },
+    # Autonomous Midday Reflection Reel (11:00 UTC, scheduled for 12:00)
+    'generate-daily-reflection-reel': {
+        'task': 'content.tasks.generate_daily_reflection_reel_task',
+        'schedule': crontab(hour=11, minute=0),
+    },
+    # Autonomous Evening Reflection (18:00 UTC, scheduled for 19:00)
+    'generate-evening-reflection-daily': {
+        'task': 'content.tasks.generate_evening_reflection_task',
+        'schedule': crontab(hour=18, minute=0),
+    },
+    # Daily Facebook Token Health Verification at midnight
+    'verify-meta-token-daily': {
+        'task': 'publishing.tasks.verify_meta_tokens_task',
+        'schedule': crontab(hour=0, minute=15),
+    },
+}
 
 # External APIs
 META_APP_ID = env('META_APP_ID', default='')

@@ -1,7 +1,50 @@
+# Python virtual environments
 venv/
+env/
+.venv/
+ENV/
+
+# Environment and secrets
 .env
+.env.local
+.env.*.local
+
+# Python bytecode and caches
 __pycache__/
 *.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.mypy_cache/
+
+# Databases
 db.sqlite3
+db.sqlite3-journal
+*.sqlite3
+
+# Uploaded and generated media
 media/
-doc
+generated_media/
+
+# Static collection
+staticfiles/
+
+# Logs
+*.log
+logs/
+
+# Celery artifacts
+celerybeat-schedule
+celerybeat-schedule.db
+celerybeat.pid
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Internal documentation
+doc/

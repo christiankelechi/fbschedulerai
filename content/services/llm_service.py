@@ -39,11 +39,6 @@ class LLMService:
 
     OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
     DEFAULT_FREE_MODELS = [
-        "meta-llama/llama-3.2-3b-instruct:free",
-        "meta-llama/llama-3.1-8b-instruct:free",
-        "meta-llama/llama-3-8b-instruct:free",
-        "mistralai/mistral-7b-instruct:free",
-        "google/gemma-2-9b-it:free",
         "openrouter/free",
     ]
 
@@ -164,6 +159,8 @@ class LLMService:
 
     def __init__(self, api_key: Optional[str] = None):
         self.api_key = api_key or getattr(settings, 'OPENROUTER_API_KEY', '') or os.environ.get('OPENROUTER_API_KEY', '')
+        model_env = getattr(settings, 'OPENROUTER_MODEL', '') or os.environ.get('OPENROUTER_MODEL', '')
+        self.models = [model_env] if model_env else list(self.DEFAULT_FREE_MODELS)
 
     def generate_reflection(
         self,
@@ -199,14 +196,14 @@ class LLMService:
         )
         user_prompt = f"Category: {category}\nPrompt Guidelines: {user_content}\n\nGenerate the reflection in the specified JSON format."
 
-        for model in self.DEFAULT_FREE_MODELS:
+        for model in self.models:
             try:
                 logger.info(f"Attempting LLM generation using model: {model}")
                 result = self._call_openrouter(model, system_prompt, user_prompt)
                 if result:
                     return result
             except Exception as e:
-                logger.warning(f"Model {model} failed: {e}. Trying next available free model.")
+                logger.warning(f"Model {model} failed: {e}. Falling back to curated bank.")
 
         logger.error("All OpenRouter models failed. Returning curated reflection fallback.")
         return self._get_fallback_reflection(category)
@@ -226,7 +223,8 @@ class LLMService:
                 {"role": "user", "content": user_prompt}
             ],
             "temperature": 0.7,
-            "max_tokens": 800
+            "max_tokens": 1000,
+            "reasoning": {"effort": "none"}
         }
 
         response = requests.post(self.OPENROUTER_URL, headers=headers, json=payload, timeout=45)
@@ -235,7 +233,11 @@ class LLMService:
             return None
 
         data = response.json()
-        raw_text = data['choices'][0]['message']['content'].strip()
+        message = data.get('choices', [{}])[0].get('message', {})
+        raw_text = (message.get('content') or '').strip()
+        if not raw_text:
+            logger.warning(f"OpenRouter model {model} returned empty content.")
+            return None
         return self._parse_json_response(raw_text)
 
     def _parse_json_response(self, text: str) -> Optional[ReflectionOutput]:

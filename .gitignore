@@ -3,7 +3,7 @@ venv/
 env/
 .venv/
 ENV/
-
+.env
 # Environment and secrets
 .env
 .env.local
@@ -45,6 +45,10 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+
+# Vercel deployment
+.vercel/
+staticfiles_build/
 
 # Internal documentation
 doc/

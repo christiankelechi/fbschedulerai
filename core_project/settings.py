@@ -14,7 +14,24 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-test-key-for-local-dev')
 DEBUG = env('DEBUG')
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', '0.0.0.0'])
+
+# Vercel deployment detection
+IS_VERCEL = bool(os.environ.get('VERCEL'))
+
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', '0.0.0.0', '.vercel.app', '.now.sh', 'testserver'])
+for _host_suffix in ['.vercel.app', '.now.sh', 'testserver']:
+    if _host_suffix not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(_host_suffix)
+
+CSRF_TRUSTED_ORIGINS = env.list(
+    'CSRF_TRUSTED_ORIGINS',
+    default=[
+        'https://*.vercel.app',
+        'https://*.now.sh',
+        'http://127.0.0.1:8000',
+        'http://localhost:8000',
+    ]
+)
 
 # Application definition
 INSTALLED_APPS = [
@@ -31,6 +48,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -133,12 +151,24 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-MEDIA_URL = 'media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')] if os.path.exists(os.path.join(BASE_DIR, 'static')) else []
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
+# Media files
+MEDIA_URL = '/media/'
+if IS_VERCEL:
+    MEDIA_ROOT = '/tmp/media'
+    if 'default' in DATABASES:
+        DATABASES['default']['CONN_MAX_AGE'] = 0
+else:
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Vercel Cron Security Secret (optional verification)
+CRON_SECRET = env('CRON_SECRET', default='')
 
 # Editorial Review & Forwarding via Zenia Email Provider
 REVIEW_EMAIL = env('REVIEW_EMAIL', default='christian.eze.241801@unn.edu.ng')

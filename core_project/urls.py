@@ -19,6 +19,11 @@ from core_project.admin_views import (
     trigger_publish_single_post_view,
     trigger_verify_token_view,
 )
+from core_project.cron_views import (
+    cron_morning_prayer_view,
+    cron_evening_bible_study_view,
+    cron_health_view,
+)
 
 
 def custom_admin_index(request):
@@ -155,12 +160,18 @@ urlpatterns = [
     path("admin/action/verify-token/", trigger_verify_token_view, name="admin_verify_token"),
     path("admin/action/posts/<int:post_id>/publish-now/", trigger_publish_single_post_view, name="admin_publish_single_post"),
 
+    # Vercel Cron Automation Endpoints
+    path("api/cron/morning-prayer/", cron_morning_prayer_view, name="cron_morning_prayer"),
+    path("api/cron/evening-bible-study/", cron_evening_bible_study_view, name="cron_evening_bible_study"),
+    path("api/cron/health/", cron_health_view, name="cron_health"),
+
     # Custom Admin Index with Dashboard KPIs
     path("admin/", custom_admin_index),
     # Standard Admin
     path("admin/", admin.site.urls),
 ]
 
+# Static & Media URL handling
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

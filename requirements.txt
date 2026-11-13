@@ -10,3 +10,4 @@ moviepy
 edge-tts
 requests
 gunicorn
+whitenoise

@@ -95,3 +95,16 @@ class AdminDashboardViewTestCase(TestCase):
         self.assertIn("Today's Facebook Posting Compliance Tracker", content_str)
         self.assertIn("christian.eze.241801@unn.edu.ng", content_str)
         self.assertIn("Rev. Fr. Ejiogu Chukwuemeka", content_str)
+
+
+class LandingPageViewTestCase(TestCase):
+    def test_landing_page_renders_successfully(self):
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        content = response.content.decode('utf-8')
+        self.assertIn("FBSchedulerAI", content)
+        self.assertIn("Rev. Fr. Chuks Ejiogu", content)
+        self.assertIn("Christian Eze", content)
+        self.assertIn("christian.eze.241801@unn.edu.ng", content)
+        self.assertIn("Mission Control", content)
+

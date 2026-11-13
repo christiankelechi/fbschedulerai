@@ -24,6 +24,7 @@ from core_project.cron_views import (
     cron_evening_bible_study_view,
     cron_health_view,
 )
+from core_project.views import landing_page_view
 
 
 def custom_admin_index(request):
@@ -145,6 +146,9 @@ def custom_admin_index(request):
 
 
 urlpatterns = [
+    # High-Fidelity Public Landing Page
+    path("", landing_page_view, name="landing_page"),
+
     # Dedicated Editorial & Review Operations
     path("admin/action/posts/<int:post_id>/mark-posted/", mark_facebook_posted_view, name="admin_mark_facebook_posted"),
     path("admin/action/posts/<int:post_id>/unmark-posted/", unmark_facebook_posted_view, name="admin_unmark_facebook_posted"),

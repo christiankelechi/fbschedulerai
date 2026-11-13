@@ -130,22 +130,35 @@ class MetaGraphClient:
         resp = requests.post(url, data=payload, timeout=30)
         return self._handle_response(resp)
 
-    def publish_photo_post(self, photo_path: str, caption: str) -> Dict[str, Any]:
+    def publish_photo_post(self, photo_path_or_url: str, caption: str) -> Dict[str, Any]:
         """
         Uploads and publishes a photo post with caption to /{page-id}/photos.
+        Seamlessly supports remote URLs (e.g. Cloudinary CDN) and local file paths.
         """
         self._require_configuration()
-        if not os.path.isfile(photo_path):
-            raise FileNotFoundError(f"Photo file not found at path: {photo_path}")
-
         url = f"{self.BASE_URL}/{self.page_id}/photos"
+
+        # Case 1: Remote URL (Cloudinary CDN or public image URL)
+        if photo_path_or_url.startswith("http://") or photo_path_or_url.startswith("https://"):
+            logger.info(f"Publishing photo to Page {self.page_id} via remote Cloudinary URL: {photo_path_or_url}")
+            data = {
+                "url": photo_path_or_url,
+                "caption": caption,
+                "access_token": self.access_token
+            }
+            resp = requests.post(url, data=data, timeout=60)
+            return self._handle_response(resp)
+
+        # Case 2: Local filesystem upload
+        if not os.path.isfile(photo_path_or_url):
+            raise FileNotFoundError(f"Photo file not found at path: {photo_path_or_url}")
+
+        logger.info(f"Publishing photo post to Page {self.page_id} from local file: {photo_path_or_url}...")
         data = {
             "caption": caption,
             "access_token": self.access_token
         }
-
-        logger.info(f"Publishing photo post to Page {self.page_id} from {photo_path}...")
-        with open(photo_path, "rb") as f:
+        with open(photo_path_or_url, "rb") as f:
             files = {"source": f}
             resp = requests.post(url, data=data, files=files, timeout=60)
 

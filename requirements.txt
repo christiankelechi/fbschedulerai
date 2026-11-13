@@ -11,3 +11,5 @@ edge-tts
 requests
 gunicorn
 whitenoise
+cloudinary
+django-cloudinary-storage

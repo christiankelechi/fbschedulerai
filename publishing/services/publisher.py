@@ -59,8 +59,16 @@ class PostPublisher:
             elif post.post_type == PostType.IMAGE_QUOTE:
                 if not post.media or not post.media.file_path:
                     raise ValueError(f"Post #{post.id} is an image post but has no linked media asset.")
+                
+                # Check for Cloudinary / remote URL first, then fallback to local path
+                media_url = post.media.file_path.url
+                if media_url.startswith("http://") or media_url.startswith("https://"):
+                    photo_target = media_url
+                else:
+                    photo_target = post.media.file_path.path
+
                 res = self.meta_client.publish_photo_post(
-                    photo_path=post.media.file_path.path,
+                    photo_path_or_url=photo_target,
                     caption=full_caption
                 )
                 meta_id = res.get('post_id') or res.get('id')

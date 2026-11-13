@@ -165,8 +165,15 @@ class ZeniaEmailService:
     def _build_message_body(self, post: GeneratedPost) -> str:
         date_str = timezone.now().strftime("%A, %B %d, %Y")
         media_info = "None (Text Only)"
+        media_url_line = ""
         if post.media and post.media.file_path:
             media_info = f"{post.media.get_asset_type_display()} ({post.media.file_path.name})"
+            url = post.media.file_path.url
+            if url.startswith("http://") or url.startswith("https://"):
+                media_url_line = (
+                    f"☁️ Cloudinary Image Link (Click to View/Download for Facebook):\n"
+                    f"   👉 {url}\n"
+                )
 
         lines = [
             "✝ REV. FR. EJIOGU CHUKWUEMEKA — SOCIAL MEDIA EDITORIAL REVIEW",
@@ -190,16 +197,22 @@ class ZeniaEmailService:
             "────────────────────────────────────────────────────────",
             "",
             f"🎨 MEDIA ARTIFACT: {media_info}",
-            "Media files can be previewed, downloaded, and managed from your Django Admin Dashboard:",
+        ]
+
+        if media_url_line:
+            lines.append(media_url_line)
+
+        lines.extend([
+            "Media files can also be previewed, downloaded, and managed from your Django Admin Dashboard:",
             "👉 http://127.0.0.1:8000/admin/",
             "",
             "✅ WORKFLOW CHECKLIST:",
             "1. Review the caption and make any pastoral or editorial adjustments.",
-            "2. Publish to Rev. Fr. Ejiogu Chukwuemeka's official Facebook Page.",
+            "2. Download or attach the graphic above and publish to Rev. Fr. Ejiogu Chukwuemeka's official Facebook Page.",
             "3. Return to the Admin Dashboard and click 'Mark as Posted to Facebook' to keep today's monitoring status updated.",
             "",
             "Blessings,",
             "Autonomous Catholic Content Scheduler"
-        ]
+        ])
         return "\n".join(lines)
 

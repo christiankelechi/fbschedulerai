@@ -155,9 +155,29 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')] if os.path.exists(os.path.join(BASE_DIR, 'static')) else []
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+# Cloudinary Media Storage Configuration
+CLOUDINARY_CLOUD_NAME = env('CLOUDINARY_CLOUD_NAME', default='')
+CLOUDINARY_API_KEY = env('CLOUDINARY_API_KEY', default='')
+CLOUDINARY_API_SECRET = env('CLOUDINARY_API_SECRET', default='')
+CLOUDINARY_URL = env('CLOUDINARY_URL', default='')
+
+USE_CLOUDINARY = bool(
+    CLOUDINARY_URL or (CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET)
+)
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': CLOUDINARY_CLOUD_NAME,
+    'API_KEY': CLOUDINARY_API_KEY,
+    'API_SECRET': CLOUDINARY_API_SECRET,
+}
+
+if USE_CLOUDINARY:
+    if 'cloudinary_storage' not in INSTALLED_APPS:
+        INSTALLED_APPS += ['cloudinary_storage', 'cloudinary']
+
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage" if USE_CLOUDINARY else "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",

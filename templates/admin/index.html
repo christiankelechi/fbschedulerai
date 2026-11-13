@@ -730,6 +730,12 @@
               📋 Copy Caption
             </button>
 
+            {% if latest_morning.media and latest_morning.media.file_path %}
+              <a href="{{ latest_morning.media.file_path.url }}" target="_blank" download class="btn-action btn-outline" style="padding: 6px 12px; font-size: 12px;" title="Open / Download Full Res Graphic">
+                📥 Download Image
+              </a>
+            {% endif %}
+
             <a href="/admin/action/posts/{{ latest_morning.id }}/send-email/" class="btn-action btn-outline" style="padding: 6px 12px; font-size: 12px;">
               📧 Resend Email
             </a>
@@ -786,6 +792,12 @@
             <button onclick="copyToClipboard(`{{ latest_evening.full_published_text|escapejs }}`)" class="btn-action btn-outline" style="padding: 6px 12px; font-size: 12px;">
               📋 Copy Caption
             </button>
+
+            {% if latest_evening.media and latest_evening.media.file_path %}
+              <a href="{{ latest_evening.media.file_path.url }}" target="_blank" download class="btn-action btn-outline" style="padding: 6px 12px; font-size: 12px;" title="Open / Download Full Res Graphic">
+                📥 Download Image
+              </a>
+            {% endif %}
 
             <a href="/admin/action/posts/{{ latest_evening.id }}/send-email/" class="btn-action btn-outline" style="padding: 6px 12px; font-size: 12px;">
               📧 Resend Email
@@ -944,6 +956,11 @@
               <button onclick="copyToClipboard(`{{ post.full_published_text|escapejs }}`)" class="btn-action btn-outline" style="padding: 5px 10px; font-size: 11px;" title="Copy caption and hashtags">
                 📋 Copy
               </button>
+              {% if post.media and post.media.file_path %}
+                <a href="{{ post.media.file_path.url }}" target="_blank" download class="btn-action btn-outline" style="padding: 5px 10px; font-size: 11px;" title="Download image / media">
+                  📥 Media
+                </a>
+              {% endif %}
               <a href="/admin/action/posts/{{ post.id }}/send-email/" class="btn-action btn-outline" style="padding: 5px 10px; font-size: 11px;" title="Resend email">
                 📧 Email
               </a>

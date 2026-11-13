@@ -7,6 +7,7 @@ class ContentCategory(models.TextChoices):
     MORNING_PRAYER = 'morning_prayer', 'Morning Prayer'
     DAILY_REFLECTION = 'daily_reflection', 'Daily Reflection'
     EVENING_REFLECTION = 'evening_reflection', 'Evening Reflection'
+    EVENING_BIBLE_STUDY = 'evening_bible_study', 'Evening Bible Study'
     SCRIPTURE = 'scripture', 'Scripture Thought'
     SAINT_OF_THE_DAY = 'saint_of_the_day', 'Saint of the Day'
     SUNDAY_HOMILY = 'sunday_homily', 'Sunday Homily Thought'
@@ -20,9 +21,10 @@ class PostType(models.TextChoices):
 
 class PostStatus(models.TextChoices):
     DRAFT = 'draft', 'Draft'
+    EMAILED = 'emailed', 'Emailed for Review'
     SCHEDULED = 'scheduled', 'Scheduled'
     PUBLISHING = 'publishing', 'Publishing In Progress'
-    PUBLISHED = 'published', 'Published'
+    PUBLISHED = 'published', 'Posted to Facebook'
     FAILED = 'failed', 'Failed'
 
 
@@ -168,7 +170,43 @@ class GeneratedPost(models.Model):
         max_length=255,
         blank=True,
         default="",
-        help_text="Returned Meta Graph API Post / Video / Reel ID."
+        help_text="Returned Meta Graph API Post / Video / Reel ID (if posted via API)."
+    )
+    # Email Editorial Review Fields (Zenia Email Provider)
+    is_emailed = models.BooleanField(
+        default=False,
+        db_index=True,
+        help_text="Forwarded to Christian Kelechi Eze for editorial review."
+    )
+    emailed_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Timestamp when forwarded via Zenia email API."
+    )
+    email_recipient = models.EmailField(
+        default="christian.eze.241801@unn.edu.ng",
+        help_text="Email address of the reviewer receiving the content."
+    )
+    # Manual Facebook Posting Tracking (Handled by Christian)
+    facebook_posted = models.BooleanField(
+        default=False,
+        db_index=True,
+        help_text="Flag indicating whether Christian has manually posted this to Facebook."
+    )
+    facebook_posted_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Timestamp when Christian confirmed manual Facebook posting."
+    )
+    facebook_post_url = models.URLField(
+        blank=True,
+        default="",
+        help_text="Optional direct link to the published Facebook post."
+    )
+    editorial_notes = models.TextField(
+        blank=True,
+        default="",
+        help_text="Editorial comments, review notes, or adaptations."
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -191,3 +229,33 @@ class GeneratedPost(models.Model):
         if self.hashtags:
             parts.append(f"\n{self.hashtags.strip()}")
         return "\n".join(parts)
+
+    def mark_as_facebook_posted(self, post_url: str = ""):
+        """Mark post as published by Christian on Facebook."""
+        now = timezone.now()
+        self.facebook_posted = True
+        self.facebook_posted_at = now
+        self.is_published = True
+        self.published_at = now
+        self.status = PostStatus.PUBLISHED
+        if post_url:
+            self.facebook_post_url = post_url
+        self.save(update_fields=['facebook_posted', 'facebook_posted_at', 'is_published', 'published_at', 'status', 'facebook_post_url', 'updated_at'])
+
+    def unmark_as_facebook_posted(self):
+        """Revert post from Facebook published state back to reviewed/pending."""
+        self.facebook_posted = False
+        self.facebook_posted_at = None
+        self.is_published = False
+        self.published_at = None
+        self.status = PostStatus.EMAILED if self.is_emailed else PostStatus.DRAFT
+        self.save(update_fields=['facebook_posted', 'facebook_posted_at', 'is_published', 'published_at', 'status', 'updated_at'])
+
+    def mark_as_emailed(self, recipient: str = "christian.eze.241801@unn.edu.ng"):
+        """Record successful email dispatch to Christian via Zenia."""
+        self.is_emailed = True
+        self.emailed_at = timezone.now()
+        self.email_recipient = recipient
+        if self.status in [PostStatus.DRAFT, PostStatus.SCHEDULED]:
+            self.status = PostStatus.EMAILED
+        self.save(update_fields=['is_emailed', 'emailed_at', 'email_recipient', 'status', 'updated_at'])

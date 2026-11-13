@@ -42,17 +42,18 @@ class PublishingLogAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'post_link',
+        'channel_badge',
+        'recipient',
         'status_badge',
-        'endpoint_used',
-        'meta_post_id',
-        'retry_count',
         'duration_display',
         'created_at'
     )
-    list_filter = ('status', 'endpoint_used', 'created_at')
-    search_fields = ('meta_post_id', 'error_message', 'request_payload', 'response_payload')
+    list_filter = ('channel', 'status', 'endpoint_used', 'created_at')
+    search_fields = ('recipient', 'meta_post_id', 'error_message', 'request_payload', 'response_payload')
     readonly_fields = (
         'post',
+        'channel',
+        'recipient',
         'status',
         'endpoint_used',
         'meta_post_id',
@@ -73,6 +74,14 @@ class PublishingLogAdmin(admin.ModelAdmin):
             )
         return "-"
     post_link.short_description = "Target Post"
+
+    def channel_badge(self, obj):
+        if obj.channel == 'email':
+            return format_html('<span style="background: #0284c7; color: #fff; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;">📧 Email (Zenia)</span>')
+        elif obj.channel == 'facebook_manual':
+            return format_html('<span style="background: #059669; color: #fff; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;">👤 Manual Facebook</span>')
+        return format_html('<span style="background: #475569; color: #fff; padding: 3px 8px; border-radius: 6px; font-size: 11px;">🌐 Meta API</span>')
+    channel_badge.short_description = "Channel"
 
     def status_badge(self, obj):
         colors = {

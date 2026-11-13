@@ -1,4 +1,5 @@
 import os
+import sys
 from pathlib import Path
 import environ
 
@@ -60,18 +61,52 @@ WSGI_APPLICATION = 'core_project.wsgi.application'
 
 # Database Configuration
 # Priority: DATABASE_URL -> Explicit DB_* settings -> SQLite fallback
-if env('DATABASE_URL', default=''):
+import socket
+
+def _resolve_db_host(host_str: str) -> str:
+    """
+    Safeguards against Windows/ISP DNS packet corruption for cloud databases.
+    Directly maps Aiven cloud domains to IP to guarantee 100% reliable psycopg2 connection.
+    """
+    if not host_str or host_str in ('localhost', '127.0.0.1', '0.0.0.0'):
+        return host_str
+    if 'pg-38f7fc77-chuksejiogu1920-b280.g.aivencloud.com' in host_str:
+        return '178.62.238.216'
+    if 'aivencloud.com' in host_str:
+        try:
+            import requests
+            resp = requests.get(f"https://dns.google/resolve?name={host_str}", timeout=4)
+            if resp.status_code == 200:
+                for ans in resp.json().get('Answer', []):
+                    if ans.get('type') == 1 and ans.get('data'):
+                        return ans.get('data')
+        except Exception:
+            pass
+    return host_str
+
+if 'test' in sys.argv:
     DATABASES = {
-        'default': env.db('DATABASE_URL')
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+        }
+    }
+elif env('DATABASE_URL', default=''):
+    _db_conf = env.db('DATABASE_URL')
+    if 'HOST' in _db_conf:
+        _db_conf['HOST'] = _resolve_db_host(_db_conf['HOST'])
+    DATABASES = {
+        'default': _db_conf
     }
 elif env('DB_ENGINE', default='') == 'django.db.backends.postgresql':
+    _host = _resolve_db_host(env('DB_HOST', default='127.0.0.1'))
     DATABASES = {
         'default': {
             'ENGINE': env('DB_ENGINE'),
             'NAME': env('DB_NAME', default='fbscheduler'),
             'USER': env('DB_USER', default='postgres'),
             'PASSWORD': env('DB_PASSWORD', default='postgres'),
-            'HOST': env('DB_HOST', default='127.0.0.1'),
+            'HOST': _host,
             'PORT': env('DB_PORT', default='5432'),
         }
     }
@@ -93,7 +128,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = env('TIME_ZONE', default='Africa/Lagos')
 USE_I18N = True
 USE_TZ = True
 
@@ -105,40 +140,36 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Editorial Review & Forwarding via Zenia Email Provider
+REVIEW_EMAIL = env('REVIEW_EMAIL', default='christian.eze.241801@unn.edu.ng')
+ZENIA_EMAIL_API_URL = env('ZENIA_EMAIL_API_URL', default='https://zenia-email-api.vercel.app/api/v1/register_email')
+MORNING_DISPATCH_HOUR = env.int('MORNING_DISPATCH_HOUR', default=3)
+EVENING_DISPATCH_HOUR = env.int('EVENING_DISPATCH_HOUR', default=17)
+
 # Celery Configuration
 CELERY_BROKER_URL = env('REDIS_URL', default='redis://127.0.0.1:6379/0')
 CELERY_RESULT_BACKEND = env('REDIS_URL', default='redis://127.0.0.1:6379/0')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'UTC'
+CELERY_TIMEZONE = env('TIME_ZONE', default='Africa/Lagos')
 
 from celery.schedules import crontab
 
 CELERY_BEAT_SCHEDULE = {
-    # Scan and publish due posts every 5 minutes
-    'publish-due-posts-every-5-mins': {
-        'task': 'publishing.tasks.publish_due_posts_task',
-        'schedule': crontab(minute='*/5'),
+    # 3:00 AM WAT: Curate Morning Prayer & Dispatch to Christian's Email for early review (ready for 6am posting)
+    'dispatch-morning-prayer-email-daily': {
+        'task': 'content.tasks.dispatch_morning_prayer_email_task',
+        'schedule': crontab(hour=MORNING_DISPATCH_HOUR, minute=0),
     },
-    # Autonomous Morning Prayer (05:00 UTC, scheduled for 06:00)
-    'generate-morning-prayer-daily': {
-        'task': 'content.tasks.generate_morning_prayer_task',
-        'schedule': crontab(hour=5, minute=0),
+    # 5:00 PM WAT: Curate Evening Bible Study & Dispatch to Christian's Email for evening review & posting
+    'dispatch-evening-bible-study-email-daily': {
+        'task': 'content.tasks.dispatch_evening_bible_study_email_task',
+        'schedule': crontab(hour=EVENING_DISPATCH_HOUR, minute=0),
     },
-    # Autonomous Midday Reflection Reel (11:00 UTC, scheduled for 12:00)
+    # 12:00 PM WAT: Autonomous Midday Reflection Reel (9:16 Video + Voiceover)
     'generate-daily-reflection-reel': {
         'task': 'content.tasks.generate_daily_reflection_reel_task',
-        'schedule': crontab(hour=11, minute=0),
-    },
-    # Autonomous Evening Reflection (18:00 UTC, scheduled for 19:00)
-    'generate-evening-reflection-daily': {
-        'task': 'content.tasks.generate_evening_reflection_task',
-        'schedule': crontab(hour=18, minute=0),
-    },
-    # Daily Facebook Token Health Verification at midnight
-    'verify-meta-token-daily': {
-        'task': 'publishing.tasks.verify_meta_tokens_task',
-        'schedule': crontab(hour=0, minute=15),
+        'schedule': crontab(hour=12, minute=0),
     },
 }
 

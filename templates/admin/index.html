@@ -5,132 +5,387 @@
 {{ block.super }}
 <style>
   :root {
-    --dash-navy: #0B132B;
-    --dash-card-bg: #1C2541;
-    --dash-gold: #D4AF37;
-    --dash-gold-light: #F4E091;
-    --dash-emerald: #10B981;
-    --dash-amber: #F59E0B;
-    --dash-rose: #EF4444;
-    --dash-blue: #3B82F6;
-    --dash-text: #F8FAFC;
-    --dash-muted: #94A3B8;
+    --navy-dark: #0A1128;
+    --navy-card: #141E3C;
+    --navy-light: #1E2D5A;
+    --gold-primary: #D4AF37;
+    --gold-light: #F4E091;
+    --gold-dark: #AA820A;
+    --emerald-500: #10B981;
+    --emerald-600: #059669;
+    --emerald-light: #D1FAE5;
+    --amber-500: #F59E0B;
+    --amber-light: #FEF3C7;
+    --rose-500: #EF4444;
+    --rose-light: #FEE2E2;
+    --sky-500: #0284C7;
+    --sky-light: #E0F2FE;
+    --slate-100: #F1F5F9;
+    --slate-200: #E2E8F0;
+    --slate-400: #94A3B8;
+    --slate-700: #334155;
+    --slate-900: #0F172A;
   }
 
   .dash-container {
-    padding: 10px 0 30px 0;
+    padding: 10px 0 40px 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--slate-900);
   }
 
+  /* HERO BANNER */
   .dash-hero {
-    background: linear-gradient(135deg, #0B132B 0%, #1C2541 100%);
-    border: 1px solid rgba(212, 175, 55, 0.35);
-    border-radius: 14px;
-    padding: 24px 28px;
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-card) 60%, #162447 100%);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 16px;
+    padding: 26px 30px;
     margin-bottom: 24px;
-    color: var(--dash-text);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
+    color: #ffffff;
+    box-shadow: 0 12px 28px -6px rgba(10, 17, 40, 0.35);
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 18px;
   }
 
   .dash-hero h1 {
     margin: 0 0 6px 0;
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--dash-gold-light);
+    font-size: 25px;
+    font-weight: 800;
+    color: var(--gold-light);
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
   }
 
   .dash-hero p {
-    margin: 0;
+    margin: 0 0 10px 0;
     font-size: 14px;
-    color: var(--dash-muted);
+    color: #cbd5e1;
   }
 
-  .token-pill {
-    background: rgba(255, 255, 255, 0.08);
+  .hero-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 12px;
+  }
+
+  .meta-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px 12px;
+    border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.15);
-    padding: 10px 16px;
+    color: #e2e8f0;
+  }
+
+  .hero-badges {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  .status-pill {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px 14px;
     border-radius: 10px;
     font-size: 13px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
+    color: #ffffff;
   }
 
-  .token-pill .dot {
+  .dot-pulse {
     width: 10px;
     height: 10px;
     border-radius: 50%;
     display: inline-block;
+    background-color: var(--emerald-500);
+    box-shadow: 0 0 10px var(--emerald-500);
   }
-  .dot-green { background-color: var(--dash-emerald); box-shadow: 0 0 8px var(--dash-emerald); }
-  .dot-amber { background-color: var(--dash-amber); box-shadow: 0 0 8px var(--dash-amber); }
-  .dot-red { background-color: var(--dash-rose); box-shadow: 0 0 8px var(--dash-rose); }
 
-  /* KPI Grid */
+  /* COMPLIANCE CENTERPIECE WIDGET */
+  .compliance-card {
+    background: #ffffff;
+    border: 2px solid var(--slate-200);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .compliance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding-bottom: 18px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--slate-200);
+  }
+
+  .compliance-title-group h2 {
+    margin: 0 0 4px 0;
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--slate-900);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .compliance-title-group p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--slate-400);
+  }
+
+  .compliance-badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .badge-all-done {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+  }
+
+  .badge-in-progress {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+  }
+
+  .badge-pending-today {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+  }
+
+  /* DUAL COLUMN TODAY'S POSTS */
+  .today-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .today-post-box {
+    border: 1px solid var(--slate-200);
+    border-radius: 12px;
+    padding: 18px;
+    background: var(--slate-100);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+  }
+
+  .today-post-box:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    border-color: #cbd5e1;
+  }
+
+  .today-post-box.posted {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+  }
+
+  .slot-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .slot-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--slate-900);
+    margin: 0 0 6px 0;
+  }
+
+  .slot-scripture {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0369a1;
+    margin-bottom: 10px;
+  }
+
+  .slot-snippet {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.45;
+    margin-bottom: 14px;
+    background: #ffffff;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .slot-delivery-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  .slot-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  /* 7-DAY STREAK */
+  .streak-section {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid var(--slate-200);
+  }
+
+  .streak-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .streak-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+  }
+
+  .streak-day {
+    background: #ffffff;
+    border: 1px solid var(--slate-200);
+    border-radius: 10px;
+    padding: 10px 6px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .streak-day.today {
+    border: 2px solid var(--sky-500);
+    background: #f0f9ff;
+  }
+
+  .streak-day-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #475569;
+  }
+
+  .streak-dots {
+    display: flex;
+    gap: 5px;
+  }
+
+  .streak-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #cbd5e1;
+  }
+
+  .streak-dot.active {
+    background-color: var(--emerald-500);
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+  }
+
+  /* KPI METRICS */
   .kpi-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 16px;
     margin-bottom: 24px;
   }
 
   .kpi-card {
     background: #ffffff;
-    border-radius: 12px;
-    padding: 18px 20px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    border-radius: 14px;
+    padding: 20px;
+    border: 1px solid var(--slate-200);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
+
   .kpi-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
   }
 
   .kpi-card .label {
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    font-weight: 600;
+    font-weight: 700;
     color: #64748b;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
 
   .kpi-card .value {
-    font-size: 30px;
+    font-size: 32px;
     font-weight: 800;
     line-height: 1;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
   }
-  .val-total { color: #1e293b; }
-  .val-scheduled { color: var(--dash-amber); }
-  .val-published { color: var(--dash-emerald); }
-  .val-failed { color: var(--dash-rose); }
 
-  /* Action Toolbar */
+  .val-total { color: var(--navy-dark); }
+  .val-emailed { color: var(--sky-500); }
+  .val-posted { color: var(--emerald-600); }
+  .val-pending { color: var(--amber-500); }
+
+  /* ACTION TOOLBAR */
   .toolbar-section {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 18px 22px;
-    margin-bottom: 24px;
+    background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+    border: 1px solid var(--slate-200);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 28px;
   }
 
   .toolbar-title {
-    font-size: 14px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 800;
     color: #334155;
     margin-bottom: 12px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .action-buttons {
@@ -142,54 +397,56 @@
   .btn-action {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 9px 15px;
-    border-radius: 8px;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 9px;
     font-size: 13px;
-    font-weight: 600;
-    text-decoration: none;
+    font-weight: 700;
+    text-decoration: none !important;
     cursor: pointer;
     transition: all 0.15s ease;
     border: none;
   }
 
-  .btn-gold {
+  .btn-morning {
     background: linear-gradient(135deg, #d4af37 0%, #b89728 100%);
-    color: #0B132B !important;
+    color: #0A1128 !important;
+    box-shadow: 0 2px 6px rgba(212, 175, 55, 0.3);
   }
-  .btn-gold:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .btn-morning:hover { filter: brightness(1.1); transform: translateY(-1px); }
 
-  .btn-blue {
+  .btn-evening {
+    background: linear-gradient(135deg, #7e22ce 0%, #6b21a8 100%);
+    color: #ffffff !important;
+    box-shadow: 0 2px 6px rgba(126, 34, 206, 0.3);
+  }
+  .btn-evening:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+  .btn-reel {
     background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
     color: #ffffff !important;
   }
-  .btn-blue:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .btn-reel:hover { filter: brightness(1.1); transform: translateY(-1px); }
 
-  .btn-purple {
-    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  .btn-post-confirm {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: #ffffff !important;
   }
-  .btn-purple:hover { filter: brightness(1.1); transform: translateY(-1px); }
-
-  .btn-green {
-    background: linear-gradient(135deg, #059669 0%, #047857 100%);
-    color: #ffffff !important;
-  }
-  .btn-green:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .btn-post-confirm:hover { filter: brightness(1.1); transform: translateY(-1px); }
 
   .btn-outline {
     background: #ffffff;
     border: 1px solid #cbd5e1;
-    color: #475569 !important;
+    color: #334155 !important;
   }
   .btn-outline:hover { background: #f1f5f9; }
 
-  /* Media & Post Grid */
+  /* CARDS GRID FOR POSTS */
   .section-heading {
-    font-size: 18px;
-    font-weight: 700;
-    color: #1e293b;
-    margin: 28px 0 14px 0;
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--slate-900);
+    margin: 32px 0 16px 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -197,24 +454,29 @@
 
   .post-card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 18px;
-    margin-bottom: 28px;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+    margin-bottom: 32px;
   }
 
   .post-card {
     background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
+    border: 1px solid var(--slate-200);
+    border-radius: 14px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     display: flex;
     flex-direction: column;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .post-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   }
 
   .post-card-media {
-    background: #0B132B;
-    min-height: 180px;
+    background: #0A1128;
+    min-height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -224,7 +486,7 @@
 
   .post-card-media img {
     width: 100%;
-    height: 180px;
+    height: 200px;
     object-fit: cover;
   }
 
@@ -234,23 +496,37 @@
     background: #000;
   }
 
-  .badge-tag {
+  .card-top-badges {
     position: absolute;
     top: 10px;
+    left: 10px;
     right: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .badge-category {
+    background: rgba(10, 17, 40, 0.85);
+    color: var(--gold-light);
+    border: 1px solid rgba(212, 175, 55, 0.4);
     padding: 4px 10px;
     border-radius: 6px;
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
   }
-  .badge-published { background-color: var(--dash-emerald); }
-  .badge-scheduled { background-color: var(--dash-amber); }
-  .badge-failed { background-color: var(--dash-rose); }
-  .badge-draft { background-color: var(--dash-blue); }
+
+  .badge-fb-status {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+  .badge-fb-posted { background-color: var(--emerald-500); color: #fff; }
+  .badge-fb-pending { background-color: var(--amber-500); color: #000; }
 
   .post-card-body {
     padding: 16px;
@@ -262,38 +538,53 @@
   .post-card-title {
     font-size: 15px;
     font-weight: 700;
-    color: #0f172a;
-    margin: 0 0 6px 0;
+    color: var(--slate-900);
+    margin: 0 0 4px 0;
+  }
+
+  .post-card-scripture {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--sky-500);
+    margin-bottom: 8px;
   }
 
   .post-card-caption {
     font-size: 13px;
-    color: #64748b;
-    line-height: 1.4;
+    color: #475569;
+    line-height: 1.45;
     margin-bottom: 12px;
     flex: 1;
+    white-space: pre-line;
+    max-height: 110px;
+    overflow-y: auto;
+    background: #f8fafc;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
   }
 
   .post-card-footer {
+    padding-top: 12px;
+    border-top: 1px solid #f1f5f9;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-top: 10px;
-    border-top: 1px solid #f1f5f9;
-    font-size: 12px;
-    color: #94a3b8;
+    flex-wrap: wrap;
+    gap: 8px;
   }
 
-  /* Table styling */
+  /* LOG TABLE */
   .log-table {
     width: 100%;
     border-collapse: collapse;
     background: #ffffff;
     border-radius: 12px;
     overflow: hidden;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--slate-200);
     margin-bottom: 30px;
   }
+
   .log-table th {
     background: #f8fafc;
     padding: 12px 16px;
@@ -301,16 +592,37 @@
     font-weight: 700;
     color: #475569;
     text-align: left;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid var(--slate-200);
   }
+
   .log-table td {
     padding: 12px 16px;
     font-size: 13px;
     color: #334155;
     border-bottom: 1px solid #f1f5f9;
   }
+
   .log-table tr:hover td {
     background-color: #f8fafc;
+  }
+
+  /* TOAST ALERT */
+  #toast-notification {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #0f172a;
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    font-size: 13px;
+    font-weight: 600;
+    display: none;
+    z-index: 99999;
+    align-items: center;
+    gap: 8px;
+    border-left: 4px solid var(--emerald-500);
   }
 </style>
 {% endblock %}
@@ -322,163 +634,349 @@
   <div class="dash-hero">
     <div>
       <h1>✝ Rev. Fr. Ejiogu Chukwuemeka</h1>
-      <p>Automated Facebook Content Generation & Scheduling Engine • Contabo Zero-Cost Production Stack</p>
+      <p>Automated Pastoral Content Engine • Autonomous AI Curation & Review Dispatch</p>
+      <div class="hero-meta-row">
+        <span class="meta-tag">👤 Reviewer: <strong>Engr. Christian Kelechi Eze</strong></span>
+        <span class="meta-tag">🕒 Local Time: <strong>{{ current_wat_time }}</strong></span>
+        <span class="meta-tag">📧 Delivery Channel: <strong>Zenia Email API</strong></span>
+      </div>
     </div>
-    <div class="token-pill">
-      {% if active_vault %}
-        {% if active_vault.verification_status == 'valid' %}
-          <span class="dot dot-green"></span>
-          <span><strong>{{ active_vault.page_name }}</strong> (Token Active)</span>
-        {% else %}
-          <span class="dot dot-amber"></span>
-          <span><strong>{{ active_vault.page_name }}</strong> ({{ active_vault.get_verification_status_display }})</span>
-        {% endif %}
-      {% else %}
-        <span class="dot dot-amber"></span>
-        <span>Meta Page Credentials: Running in Mock Mode</span>
-      {% endif %}
-      <a href="/admin/action/verify-token/" class="btn-action btn-outline" style="padding: 4px 10px; font-size: 11px;">Verify</a>
+    <div class="hero-badges">
+      <div class="status-pill">
+        <span class="dot-pulse"></span>
+        <span>Review Email: <strong>{{ review_email }}</strong></span>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <a href="/admin/action/test-email/" class="btn-action btn-outline" style="padding: 6px 12px; font-size: 11px; color: #fff !important; background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.25);">
+          🔄 Ping Email API
+        </a>
+      </div>
     </div>
   </div>
 
-  <!-- KPI SUMMARY CARDS -->
+  <!-- TODAY'S FACEBOOK POSTING COMPLIANCE TRACKER -->
+  <div class="compliance-card">
+    <div class="compliance-header">
+      <div class="compliance-title-group">
+        <h2>📅 Today's Facebook Posting Compliance Tracker</h2>
+        <p>Monitor whether daily reflections have been forwarded and manually published to Facebook.</p>
+      </div>
+      <div>
+        {% if today_compliance_status == 'completed' %}
+          <div class="compliance-badge badge-all-done">
+            <span>🟢</span>
+            <span>{{ today_compliance_label }}</span>
+          </div>
+        {% elif today_compliance_status == 'morning_only' or today_compliance_status == 'evening_only' %}
+          <div class="compliance-badge badge-in-progress">
+            <span>⚡</span>
+            <span>{{ today_compliance_label }}</span>
+          </div>
+        {% else %}
+          <div class="compliance-badge badge-pending-today">
+            <span>⏳</span>
+            <span>{{ today_compliance_label }}</span>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- DUAL TODAY POST SLOTS -->
+    <div class="today-grid">
+
+      <!-- SLOT A: MORNING PRAYER -->
+      <div class="today-post-box {% if morning_is_posted %}posted{% endif %}">
+        <div>
+          <div class="slot-label">
+            <span style="color: #b45309;">🌅 MORNING PRAYER (Target: 3:00 AM Email &bull; 6:00 AM Post)</span>
+            {% if morning_is_posted %}
+              <span style="color: var(--emerald-600); font-weight: 800;">✅ POSTED</span>
+            {% else %}
+              <span style="color: var(--amber-500); font-weight: 800;">⏳ PENDING</span>
+            {% endif %}
+          </div>
+
+          {% if latest_morning %}
+            <div class="slot-title">{{ latest_morning.title|default:"Morning Reflection & Prayer" }}</div>
+            <div class="slot-scripture">📖 {{ latest_morning.scripture_citation|default:"Catholic Scripture Reading" }}</div>
+            <div class="slot-snippet">{{ latest_morning.caption|truncatewords:25 }}</div>
+
+            <div class="slot-delivery-status">
+              {% if latest_morning.is_emailed %}
+                <span style="color: #0284c7;">📧 Emailed to {{ review_email }} ({{ latest_morning.emailed_at|date:"h:i A" }})</span>
+              {% else %}
+                <span style="color: #64748b;">⚪ Not yet emailed</span>
+              {% endif %}
+            </div>
+          {% else %}
+            <div class="slot-title">No Morning Prayer Generated for Today</div>
+            <p style="font-size: 13px; color: #64748b;">Click the button below to generate and forward the morning reflection now.</p>
+          {% endif %}
+        </div>
+
+        <div class="slot-actions">
+          {% if latest_morning %}
+            {% if morning_is_posted %}
+              <a href="/admin/action/posts/{{ latest_morning.id }}/unmark-posted/" class="btn-action btn-outline" style="padding: 6px 12px; font-size: 12px;">
+                ↩️ Revert to Pending
+              </a>
+            {% else %}
+              <a href="/admin/action/posts/{{ latest_morning.id }}/mark-posted/" class="btn-action btn-post-confirm" style="padding: 7px 14px; font-size: 12px;">
+                ✅ Mark as Posted to Facebook
+              </a>
+            {% endif %}
+
+            <button onclick="copyToClipboard(`{{ latest_morning.full_published_text|escapejs }}`)" class="btn-action btn-outline" style="padding: 6px 12px; font-size: 12px;">
+              📋 Copy Caption
+            </button>
+
+            <a href="/admin/action/posts/{{ latest_morning.id }}/send-email/" class="btn-action btn-outline" style="padding: 6px 12px; font-size: 12px;">
+              📧 Resend Email
+            </a>
+          {% else %}
+            <a href="/admin/action/morning-flow/" class="btn-action btn-morning" style="padding: 8px 14px; font-size: 12px;">
+              🌅 Generate & Email Morning Prayer Now
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- SLOT B: EVENING BIBLE STUDY -->
+      <div class="today-post-box {% if evening_is_posted %}posted{% endif %}">
+        <div>
+          <div class="slot-label">
+            <span style="color: #7e22ce;">📖 EVENING BIBLE STUDY (Target: 5:00 PM Email &bull; Evening Post)</span>
+            {% if evening_is_posted %}
+              <span style="color: var(--emerald-600); font-weight: 800;">✅ POSTED</span>
+            {% else %}
+              <span style="color: var(--amber-500); font-weight: 800;">⏳ PENDING</span>
+            {% endif %}
+          </div>
+
+          {% if latest_evening %}
+            <div class="slot-title">{{ latest_evening.title|default:"Evening Bible Study Reflection" }}</div>
+            <div class="slot-scripture">📖 {{ latest_evening.scripture_citation|default:"Bible Study Passage" }}</div>
+            <div class="slot-snippet">{{ latest_evening.caption|truncatewords:25 }}</div>
+
+            <div class="slot-delivery-status">
+              {% if latest_evening.is_emailed %}
+                <span style="color: #0284c7;">📧 Emailed to {{ review_email }} ({{ latest_evening.emailed_at|date:"h:i A" }})</span>
+              {% else %}
+                <span style="color: #64748b;">⚪ Not yet emailed</span>
+              {% endif %}
+            </div>
+          {% else %}
+            <div class="slot-title">No Evening Bible Study Generated for Today</div>
+            <p style="font-size: 13px; color: #64748b;">Click the button below to generate and forward the evening study now.</p>
+          {% endif %}
+        </div>
+
+        <div class="slot-actions">
+          {% if latest_evening %}
+            {% if evening_is_posted %}
+              <a href="/admin/action/posts/{{ latest_evening.id }}/unmark-posted/" class="btn-action btn-outline" style="padding: 6px 12px; font-size: 12px;">
+                ↩️ Revert to Pending
+              </a>
+            {% else %}
+              <a href="/admin/action/posts/{{ latest_evening.id }}/mark-posted/" class="btn-action btn-post-confirm" style="padding: 7px 14px; font-size: 12px;">
+                ✅ Mark as Posted to Facebook
+              </a>
+            {% endif %}
+
+            <button onclick="copyToClipboard(`{{ latest_evening.full_published_text|escapejs }}`)" class="btn-action btn-outline" style="padding: 6px 12px; font-size: 12px;">
+              📋 Copy Caption
+            </button>
+
+            <a href="/admin/action/posts/{{ latest_evening.id }}/send-email/" class="btn-action btn-outline" style="padding: 6px 12px; font-size: 12px;">
+              📧 Resend Email
+            </a>
+          {% else %}
+            <a href="/admin/action/evening-flow/" class="btn-action btn-evening" style="padding: 8px 14px; font-size: 12px;">
+              📖 Generate & Email Evening Study Now
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 7-DAY STREAK -->
+    <div class="streak-section">
+      <div class="streak-title">
+        <span>🗓 Past 7 Days Publishing Consistency Streak</span>
+        <span>🟢 Morning Dot &bull; 🟣 Evening Dot</span>
+      </div>
+      <div class="streak-grid">
+        {% for day in past_7_days %}
+          <div class="streak-day {% if day.is_today %}today{% endif %}">
+            <span class="streak-day-label">{{ day.date }}{% if day.is_today %} (Today){% endif %}</span>
+            <div class="streak-dots">
+              <span class="streak-dot {% if day.morning_ok %}active{% endif %}" title="Morning Post {% if day.morning_ok %}Published{% else %}Pending{% endif %}"></span>
+              <span class="streak-dot {% if day.evening_ok %}active{% endif %}" title="Evening Study {% if day.evening_ok %}Published{% else %}Pending{% endif %}"></span>
+            </div>
+            {% if day.both_ok %}
+              <span style="font-size: 10px; font-weight: 700; color: var(--emerald-600);">2/2</span>
+            {% elif day.has_activity %}
+              <span style="font-size: 10px; font-weight: 700; color: var(--amber-500);">1/2</span>
+            {% else %}
+              <span style="font-size: 10px; color: #94a3b8;">0/2</span>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- KPI SUMMARY METRICS -->
   <div class="kpi-grid">
     <div class="kpi-card">
-      <div class="label">Total Generated Posts</div>
+      <div class="label">Today's Facebook Status</div>
+      <div class="value val-posted">{{ today_posted_count }} / 2</div>
+      <small style="color: #64748b;">Daily target posts confirmed</small>
+    </div>
+    <div class="kpi-card">
+      <div class="label">Total Curated Posts</div>
       <div class="value val-total">{{ total_posts|default:0 }}</div>
-      <small style="color: #64748b;">All autonomous reflections</small>
+      <small style="color: #64748b;">Stored in PostgreSQL backend</small>
     </div>
     <div class="kpi-card">
-      <div class="label">Scheduled / Pending</div>
-      <div class="value val-scheduled">{{ scheduled_posts|default:0 }}</div>
-      <small style="color: #64748b;">Ready for automated publication</small>
+      <div class="label">Dispatched to Email</div>
+      <div class="value val-emailed">{{ emailed_posts_count|default:0 }}</div>
+      <small style="color: #64748b;">Sent via Zenia Email API</small>
     </div>
     <div class="kpi-card">
-      <div class="label">Published to Meta</div>
-      <div class="value val-published">{{ published_posts|default:0 }}</div>
-      <small style="color: #64748b;">Live on Facebook Page</small>
+      <div class="label">Published on Facebook</div>
+      <div class="value val-posted">{{ facebook_posted_count|default:0 }}</div>
+      <small style="color: #64748b;">Confirmed by Christian</small>
     </div>
     <div class="kpi-card">
-      <div class="label">Failed / Retrying</div>
-      <div class="value val-failed">{{ failed_posts|default:0 }}</div>
-      <small style="color: #64748b;">Requires review or retry</small>
+      <div class="label">Media Assets Created</div>
+      <div class="value val-total">{{ total_media_count|default:0 }}</div>
+      <small style="color: #64748b;">Quote cards & Reels library</small>
     </div>
   </div>
 
-  <!-- QUICK ACTION TOOLBAR -->
+  <!-- INSTANT OPERATIONS TOOLBAR -->
   <div class="toolbar-section">
-    <div class="toolbar-title">⚡ Instant Generator & Dispatch Operations</div>
+    <div class="toolbar-title">
+      <span>⚡ Instant Curation & Dispatch Operations</span>
+      <span style="font-size: 11px; text-transform: none; color: #64748b;">Trigger AI pipelines & review dispatches on demand</span>
+    </div>
     <div class="action-buttons">
-      <a href="/admin/action/generate-content/?category=morning_prayer&type=image_quote" class="btn-action btn-gold">
-        🌅 Generate Morning Prayer Card
+      <a href="/admin/action/morning-flow/" class="btn-action btn-morning">
+        🌅 Generate & Email Morning Prayer Now (3:00 AM Test)
       </a>
-      <a href="/admin/action/generate-content/?category=daily_reflection&type=vertical_reel" class="btn-action btn-blue">
-        🎬 Generate Midday Reel (9:16 Video)
+      <a href="/admin/action/evening-flow/" class="btn-action btn-evening">
+        📖 Generate & Email Evening Bible Study Now (5:00 PM Test)
       </a>
-      <a href="/admin/action/generate-content/?category=evening_reflection&type=image_quote" class="btn-action btn-purple">
-        🕊 Generate Evening Reflection Card
+      <a href="/admin/action/reel-flow/" class="btn-action btn-reel">
+        🎬 Synthesize 9:16 Video Reel (TTS + FFmpeg)
       </a>
-      <a href="/admin/action/publish-due/" class="btn-action btn-green">
-        🚀 Publish Due Posts Now
+      <a href="/admin/action/test-email/" class="btn-action btn-outline">
+        📧 Test Zenia Email Channel
       </a>
-      <a href="/admin/action/verify-token/" class="btn-action btn-outline">
-        🔄 Test Meta Graph Connection
+      <a href="/admin/" class="btn-action btn-outline">
+        🔄 Refresh Dashboard
       </a>
     </div>
   </div>
 
-  <!-- RECENT GENERATED POSTS & MEDIA PREVIEWS -->
+  <!-- RECENT CURATED POSTS & MEDIA GALLERY -->
   <div class="section-heading">
-    <span>📸 Recent Generated Content & Media Artifacts</span>
-    <a href="/admin/content/generatedpost/" style="font-size: 13px; font-weight: 600; text-decoration: none;">View All Posts &rarr;</a>
+    <span>📸 Curated Content & Review Workbench</span>
+    <a href="/admin/content/generatedpost/" style="font-size: 13px; font-weight: 700; color: #2563eb; text-decoration: none;">View All Stored Posts &rarr;</a>
   </div>
 
   <div class="post-card-grid">
     {% for post in recent_posts %}
       <div class="post-card">
         <div class="post-card-media">
-          {% if post.status == 'published' %}
-            <span class="badge-tag badge-published">Published</span>
-          {% elif post.status == 'scheduled' %}
-            <span class="badge-tag badge-scheduled">Scheduled</span>
-          {% elif post.status == 'failed' %}
-            <span class="badge-tag badge-failed">Failed</span>
-          {% else %}
-            <span class="badge-tag badge-draft">{{ post.status|title }}</span>
-          {% endif %}
+          <div class="card-top-badges">
+            <span class="badge-category">{{ post.get_category_display }}</span>
+            {% if post.facebook_posted %}
+              <span class="badge-fb-status badge-fb-posted">✅ Facebook Posted</span>
+            {% else %}
+              <span class="badge-fb-status badge-fb-pending">⏳ Pending Post</span>
+            {% endif %}
+          </div>
 
-          {% if post.media %}
+          {% if post.media and post.media.file_path %}
             {% if post.media.asset_type == 'image' %}
-              <img src="{{ post.media.file_path.url }}" alt="{{ post.title }}" />
+              <img src="{{ post.media.file_path.url }}" alt="Quote Card" loading="lazy" />
             {% elif post.media.asset_type == 'video' %}
-              <video src="{{ post.media.file_path.url }}" controls preload="metadata"></video>
+              <video src="{{ post.media.file_path.url }}" controls preload="none"></video>
             {% elif post.media.asset_type == 'audio' %}
-              <div style="padding: 20px; width: 100%; text-align: center;">
-                <p style="color: #fff; font-size: 12px; margin-bottom: 8px;">🎙 {{ post.media.title }}</p>
-                <audio src="{{ post.media.file_path.url }}" controls style="width: 90%;"></audio>
-              </div>
+              <audio src="{{ post.media.file_path.url }}" controls style="width: 80%;"></audio>
             {% endif %}
           {% else %}
-            <div style="color: #94a3b8; font-size: 13px; text-align: center; padding: 20px;">
-              📝 Text Feed Post
-            </div>
+            <div style="color: var(--slate-400); font-size: 13px;">Text Feed Post (No Media)</div>
           {% endif %}
         </div>
 
         <div class="post-card-body">
-          <h3 class="post-card-title">{{ post.title|default:"Catholic Reflection" }}</h3>
-          <p class="post-card-caption">{{ post.caption|truncatewords:22 }}</p>
-          {% if post.scripture_citation %}
-            <div style="font-size: 12px; font-weight: 600; color: #b89728; margin-bottom: 8px;">
-              📖 {{ post.scripture_citation }}
-            </div>
-          {% endif %}
+          <div class="post-card-title">{{ post.title|default:"Daily Pastoral Thought" }}</div>
+          <div class="post-card-scripture">📖 {{ post.scripture_citation|default:"Catholic Scripture Reading" }}</div>
+          <div class="post-card-caption">{{ post.full_published_text }}</div>
+
+          <div style="font-size: 11px; color: #64748b; margin-bottom: 8px;">
+            {% if post.is_emailed %}
+              <span style="color: var(--sky-500); font-weight: 600;">📧 Emailed to Christian on {{ post.emailed_at|date:"M d, H:i" }}</span>
+            {% else %}
+              <span>⚪ Not yet emailed</span>
+            {% endif %}
+          </div>
+
           <div class="post-card-footer">
-            <span>
-              {% if post.scheduled_time %}
-                ⏰ {{ post.scheduled_time|date:"M d, H:i" }}
-              {% else %}
-                Created {{ post.created_at|timesince }} ago
-              {% endif %}
-            </span>
             <div>
-              {% if not post.is_published %}
-                <a href="/admin/action/posts/{{ post.id }}/publish-now/" class="btn-action btn-gold" style="padding: 4px 10px; font-size: 11px;">
-                  Publish Now
+              {% if post.facebook_posted %}
+                <a href="/admin/action/posts/{{ post.id }}/unmark-posted/" class="btn-action btn-outline" style="padding: 5px 10px; font-size: 11px;">
+                  ↩️ Unmark
                 </a>
               {% else %}
-                <span style="color: var(--dash-emerald); font-weight: 600;">✓ Live</span>
+                <a href="/admin/action/posts/{{ post.id }}/mark-posted/" class="btn-action btn-post-confirm" style="padding: 5px 12px; font-size: 11px;">
+                  ✅ Mark Posted
+                </a>
               {% endif %}
-              <a href="/admin/content/generatedpost/{{ post.id }}/change/" style="margin-left: 6px; font-size: 11px;">Edit</a>
+            </div>
+
+            <div style="display: flex; gap: 6px;">
+              <button onclick="copyToClipboard(`{{ post.full_published_text|escapejs }}`)" class="btn-action btn-outline" style="padding: 5px 10px; font-size: 11px;" title="Copy caption and hashtags">
+                📋 Copy
+              </button>
+              <a href="/admin/action/posts/{{ post.id }}/send-email/" class="btn-action btn-outline" style="padding: 5px 10px; font-size: 11px;" title="Resend email">
+                📧 Email
+              </a>
+              <a href="/admin/content/generatedpost/{{ post.id }}/change/" class="btn-action btn-outline" style="padding: 5px 8px; font-size: 11px;">
+                ✏️
+              </a>
             </div>
           </div>
         </div>
       </div>
     {% empty %}
       <div style="grid-column: 1 / -1; padding: 40px; text-align: center; background: #ffffff; border-radius: 12px; border: 1px dashed #cbd5e1;">
-        <p style="color: #64748b; margin-bottom: 12px;">No posts generated yet.</p>
-        <a href="/admin/action/generate-content/?category=daily_reflection&type=image_quote" class="btn-action btn-gold">
-          ✨ Generate First Reflection Card
-        </a>
+        <h3 style="color: #64748b;">No Content Generated Yet</h3>
+        <p style="color: #94a3b8; font-size: 14px;">Use the Quick Action buttons above to generate your first Morning Prayer or Evening Bible Study reflection!</p>
       </div>
     {% endfor %}
   </div>
 
-  <!-- RECENT PUBLISHING LOGS AUDIT -->
+  <!-- AUDIT LOG TABLE -->
   <div class="section-heading">
-    <span>📋 Meta Graph API Publishing Logs</span>
-    <a href="/admin/publishing/publishinglog/" style="font-size: 13px; font-weight: 600; text-decoration: none;">View All Logs &rarr;</a>
+    <span>📋 Delivery & Publishing Activity Audit Logs</span>
+    <a href="/admin/publishing/publishinglog/" style="font-size: 13px; font-weight: 700; color: #2563eb; text-decoration: none;">View All Logs &rarr;</a>
   </div>
 
   <table class="log-table">
     <thead>
       <tr>
         <th>ID</th>
-        <th>Post</th>
+        <th>Target Post</th>
+        <th>Channel</th>
+        <th>Recipient</th>
         <th>Status</th>
-        <th>Endpoint</th>
-        <th>Meta Post ID</th>
-        <th>Duration</th>
+        <th>Latency</th>
         <th>Timestamp</th>
       </tr>
     </thead>
@@ -487,42 +985,80 @@
         <tr>
           <td>#{{ log.id }}</td>
           <td>
-            <a href="/admin/content/generatedpost/{{ log.post.id }}/change/">
-              {{ log.post.title|default:log.post.caption|truncatewords:6 }}
-            </a>
-          </td>
-          <td>
-            {% if log.status == 'success' %}
-              <span style="color: var(--dash-emerald); font-weight: 700;">🟢 Success</span>
-            {% elif log.status == 'failed' %}
-              <span style="color: var(--dash-rose); font-weight: 700;">🔴 Failed</span>
+            {% if log.post %}
+              <a href="/admin/content/generatedpost/{{ log.post.id }}/change/" style="font-weight: 600; text-decoration: none; color: #0284c7;">
+                Post #{{ log.post.id }} ({{ log.post.get_category_display }})
+              </a>
             {% else %}
-              <span style="color: var(--dash-amber); font-weight: 700;">🟡 {{ log.status|title }}</span>
+              -
             {% endif %}
           </td>
-          <td><code>{{ log.endpoint_used|default:"N/A" }}</code></td>
-          <td><code>{{ log.meta_post_id|default:"-" }}</code></td>
-          <td>{{ log.duration_ms }} ms</td>
-          <td>{{ log.created_at|date:"M d, H:i:s" }}</td>
+          <td>
+            {% if log.channel == 'email' %}
+              <span style="background: #e0f2fe; color: #0369a1; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;">📧 Email (Zenia)</span>
+            {% elif log.channel == 'facebook_manual' %}
+              <span style="background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;">👤 Manual Facebook</span>
+            {% else %}
+              <span style="background: #f1f5f9; color: #475569; padding: 3px 8px; border-radius: 6px; font-size: 11px;">🌐 Meta API</span>
+            {% endif %}
+          </td>
+          <td style="font-size: 12px; color: #475569;">{{ log.recipient|default:"-" }}</td>
+          <td>
+            {% if log.status == 'success' %}
+              <span style="color: var(--emerald-600); font-weight: 700;">✓ Success (200 OK)</span>
+            {% elif log.status == 'failed' %}
+              <span style="color: var(--rose-500); font-weight: 700;">✕ Failed</span>
+            {% else %}
+              <span style="color: #64748b;">{{ log.get_status_display }}</span>
+            {% endif %}
+          </td>
+          <td style="font-size: 12px; color: #64748b;">{{ log.duration_ms }} ms</td>
+          <td style="font-size: 12px; color: #64748b;">{{ log.created_at|date:"M d, Y H:i" }}</td>
         </tr>
       {% empty %}
         <tr>
-          <td colspan="7" style="text-align: center; color: #94a3b8; padding: 24px;">
-            No publishing activity logged yet.
-          </td>
+          <td colspan="7" style="text-align: center; color: #94a3b8; padding: 24px;">No dispatch logs recorded yet.</td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
 
-  <!-- STANDARD DJANGO ADMIN APP SECTIONS -->
-  <div class="section-heading">
-    <span>🗄 Core Data Models & Administration</span>
-  </div>
-
-  <div id="content-main">
-    {% include "admin/app_list.html" with app_list=app_list %}
-  </div>
-
 </div>
+
+<!-- TOAST NOTIFICATION CONTAINER -->
+<div id="toast-notification">
+  <span>📋</span>
+  <span id="toast-text">Caption copied to clipboard! Ready to paste into Facebook.</span>
+</div>
+
+<script>
+  function copyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(showToast);
+    } else {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        showToast();
+      } catch (err) {
+        alert("Copied to clipboard!");
+      }
+      document.body.removeChild(textArea);
+    }
+  }
+
+  function showToast() {
+    const toast = document.getElementById("toast-notification");
+    toast.style.display = "flex";
+    setTimeout(() => {
+      toast.style.display = "none";
+    }, 3000);
+  }
+</script>
 {% endblock %}

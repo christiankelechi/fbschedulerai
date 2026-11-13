@@ -61,6 +61,12 @@ class LLMService:
             "Include gratitude for God's mercies, asking for forgiveness and peaceful rest under Mary's maternal mantle. "
             "Include scripture and an evening blessing from Rev. Fr. Ejiogu Chukwuemeka."
         ),
+        'evening_bible_study': (
+            "Conduct an engaging, spiritually deep Catholic Evening Bible Study reflection by Rev. Fr. Ejiogu Chukwuemeka. "
+            "Focus on unpacking a specific biblical passage or theme with clear verse-by-verse theological insight, "
+            "historical/liturgical context, and practical faith lessons for evening personal or family devotion. "
+            "Conclude with an evening blessing and thought-provoking study questions or spiritual challenge."
+        ),
         'scripture': (
             "Elaborate on a profound biblical passage with clear theological clarity and practical application for Christians today. "
             "Reverent, thought-provoking, pastoral tone by Rev. Fr. Ejiogu Chukwuemeka."
@@ -128,6 +134,28 @@ class LLMService:
                 "May the abundant mercy of Jesus Christ envelop your heart. Unforgiveness is a heavy chain that imprisons "
                 "the soul, but mercy sets us free. As God has generously pardoned us, let us extend that same healing grace "
                 "to others today."
+            )
+        ),
+        ReflectionOutput(
+            title="Thy Word Is a Lamp Unto My Feet: Evening Bible Study",
+            caption=(
+                "Good evening and peace of Christ be with you, beloved family of God.\n\n"
+                "As the day draws to a gentle close, let us gather around the living Word of God. "
+                "Psalm 119:105 declares: 'Your word is a lamp for my feet, a light on my path.' "
+                "In ancient times, a traveler carried a small oil lamp that illuminated only the very next step, not the "
+                "miles ahead. God's Word works the same way in our daily walk. He does not always reveal the entire "
+                "destination at once, but He provides exact light and wisdom for every single step you must take today.\n\n"
+                "Tonight, reflect upon where you need God's divine illumination in your family, your career, and your "
+                "spiritual walk. Surrender your plans to Him in quiet prayer before you rest.\n\n"
+                "May Almighty God bless and protect you tonight: Father, Son, and Holy Spirit. Amen."
+            ),
+            scripture_citation="Psalm 119:105",
+            hashtags="#EveningBibleStudy #WordOfGod #CatholicScripture #FrEjiogu #NightPrayer #LampUntoMyFeet",
+            quote_summary="God's Word is a lamp for your next step. Trust Him for tomorrow, and walk faithfully in His light tonight.",
+            speech_text=(
+                "Good evening and peace of Christ be with you, beloved family of God. As the day draws to a gentle close, "
+                "let us gather around the living Word of God. Psalm 119 declares that His word is a lamp unto our feet. "
+                "Trust Him for tomorrow, and walk faithfully in His holy light tonight."
             )
         )
     ]

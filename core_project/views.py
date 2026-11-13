@@ -54,3 +54,4 @@ def landing_page_view(request):
         "app_version": "2.4.0",
     }
     return render(request, "landing.html", context)
+

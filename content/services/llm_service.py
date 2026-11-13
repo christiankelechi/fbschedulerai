@@ -39,6 +39,8 @@ class LLMService:
 
     OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
     DEFAULT_FREE_MODELS = [
+        "meta-llama/llama-3.2-3b-instruct:free",
+        "meta-llama/llama-3.1-8b-instruct:free",
         "meta-llama/llama-3-8b-instruct:free",
         "mistralai/mistral-7b-instruct:free",
         "google/gemma-2-9b-it:free",
